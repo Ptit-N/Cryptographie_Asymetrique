@@ -5,13 +5,16 @@ using namespace std;
 
 int main()
 {
-	lentier a;
-	lentier b;
-
-	a.p = 3;
-	b.p = 4;
-	a.size = 5;
-	a.size = 6;
+	const unsigned int m(5);
+	const unsigned int n(10);
 	
-	a = b.lentier::operator%(b);
+	lentier a{ new unsigned int[m](), m };
+	lentier b{ new unsigned int[n](), n };
+
+	a %= b;
+
+	cout << a.size;
+
+	delete[] a.p;
+	delete[] b.p;
 }

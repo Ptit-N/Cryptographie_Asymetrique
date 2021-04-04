@@ -1,7 +1,13 @@
 #pragma once
-#include "Autres_Groupes/Others.h"
 
-struct lentier;
+struct lentier
+{
+	unsigned int* p;
+	unsigned int size;
+	
+	
+	lentier operator%=(lentier a);
+};
 
 lentier operator%(lentier a, lentier b);
 

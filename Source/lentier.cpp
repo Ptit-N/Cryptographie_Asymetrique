@@ -1,16 +1,12 @@
 #include "lentier.h"
 
-struct lentier
+lentier lentier::operator%=(lentier a)
 {
-	unsigned int p;
-	unsigned int size;
-	
-	lentier operator%=(lentier a)
-	{
-		*this = div_eucl(*this, a);
-		return *this;
-	}
-};
+	delete[] this->p;
+	*this = div_eucl(*this, a);
+	return *this;
+}
+
 
 lentier operator%(lentier a, lentier b)
 {
@@ -21,5 +17,5 @@ lentier operator%(lentier a, lentier b)
 
 lentier div_eucl(lentier a, lentier b)
 {
-	return a;
+	return b;
 }
