@@ -1,5 +1,6 @@
 #include "lentier.h"
 
+/*
 lentier lentier::operator%=(lentier a)
 {
 	delete[] this->p;
@@ -19,3 +20,4 @@ lentier div_eucl(lentier a, lentier b)
 {
 	return b;
 }
+*/
