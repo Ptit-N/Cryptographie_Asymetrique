@@ -18,9 +18,19 @@ void Affiche_lentier(lentier a);
  */
 void lAdjust(lentier& a, unsigned int nsize);
 
+/*
+ * E: deux lentiers
+ * S: un lentier (la somme des deux paramètres)
+ * R: fait la somme des deux lentiers passés en paramètre
+ */
 lentier add_lentier(lentier a, lentier b);
 
-lentier sub_entier(lentier a, lentier b);
+/*
+ * E: deux lentiers
+ * S: un lentier (la différence des deux paramètres)
+ * R: fait la différence des deux lentiers passés en paramètre
+ */
+lentier sub_lentier(lentier a, lentier b);
 
 char cmp_lentier(lentier a, lentier b);
 
