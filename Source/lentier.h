@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Autres_Groupes/Others.h"
+
 /*
 struct lentier
 {
