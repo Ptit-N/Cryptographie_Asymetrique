@@ -3,29 +3,34 @@
 
 using namespace std;
 
+void lentier2 (int *a)
+{
+	cout << *a << endl << a << endl << &a;
+	*a = 10;
+}
+
+
 int main()
 {
-	lentier a, b;
-
+	lentier a, b, c;
 	a.size = 2;
-	a.p = new unsigned int[a.size];
-
-	b.size = 3;
-	b.p = new unsigned int[b.size];
-
-	a.p[0] = 1;
-	b.p[0] = 1;
-	a.p[1] = UINT_MAX;
-	b.p[1] = UINT_MAX;
-	b.p[2] = 3;
+	a.p = new unsigned[a.size];
+	b.size = 2;
+	b.p = new unsigned[b.size];
 	
-	lentier c = sub_lentier(a, b);
+	a.p[0] = 10;
+	a.p[1] = UINT_MAX;
+	b.p[0] = 3;
+	b.p[1] = UINT_MAX;
 
-	cout << "size of C: " << c.size << endl;
+	c = add_lentier(a, b);
 
 	Affiche_lentier(c);
 	
 	delete[] a.p;
 	delete[] b.p;
 	delete[] c.p;
+
+	int aab = 9;
+	lentier2(&aab);
 }

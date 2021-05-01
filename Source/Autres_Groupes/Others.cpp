@@ -1,6 +1,8 @@
 #include "Others.h"
 
-void Affiche_lentier(lentier a)
+#include <charconv>
+
+void Affiche_lentier(const lentier a)
 {
 	for (auto i = a.size; i >= 1; i--)
 	{
@@ -41,7 +43,7 @@ lentier add_lentier(const lentier a, const lentier b)
 	}
 
 	Sn.size = msize + 1;
-	Sn.p = new unsigned int[Sn.size];
+	Sn.p = new unsigned int[Sn.size]();
 	
 	c = 0;
 	for (unsigned int i = 0; i < msize; i++)
@@ -66,7 +68,7 @@ lentier add_lentier(const lentier a, const lentier b)
 	return Sn;
 }
 
-lentier sub_lentier(lentier a, lentier b)
+lentier sub_lentier(const lentier a, const lentier b)
 {
 	lentier Sn;
 	
@@ -83,7 +85,7 @@ lentier sub_lentier(lentier a, lentier b)
 	msize = a.size;
 
 	Sn.size = msize;
-	Sn.p = new unsigned int[Sn.size];
+	Sn.p = new unsigned int[Sn.size]();
 
 	c = 0;
 	for (unsigned int i = 0; i < msize; i++)
@@ -118,7 +120,7 @@ lentier sub_lentier(lentier a, lentier b)
 	return Sn;
 }
 
-char cmp_lentier(lentier a, lentier b)
+char cmp_lentier(const lentier a, const lentier b)
 {
 	if(a.size > b.size)
 	{
@@ -145,12 +147,122 @@ char cmp_lentier(lentier a, lentier b)
 	return 0;
 }
 
-lentier mult_classique(lentier a, lentier b)
+bool operator>(const lentier a, const lentier b)
+{
+	if(cmp_lentier(a, b) == 1)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+bool operator<(const lentier a, const lentier b)
+{
+	if (cmp_lentier(a, b) == -1)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+bool operator==(const lentier a, const lentier b)
+{
+	if (cmp_lentier(a, b) == 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+bool operator>=(const lentier a, const lentier b)
+{
+	char i = cmp_lentier(a, b);
+	if (i == 1 || i == 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+bool operator<=(const lentier a, const lentier b)
+{
+	char i = cmp_lentier(a, b);
+	if (i == -1 || i == 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
+lentier mult_classique(const lentier a, const lentier b)
+{
+	lentier Sn;
+	Sn.size = a.size + b.size;
+	Sn.p = new unsigned int[Sn.size]();
+
+	for(unsigned i = 0; i < a.size; i++)
+	{
+		unsigned int c = 0;
+		for(unsigned j = 0; j < b.size; j++)
+		{
+			long long unsigned temp = Sn.p[i + j] + static_cast<long long unsigned>(a.p[i]) * b.p[j] + c;
+			Sn.p[i + j] = temp % (static_cast<long long unsigned>(UINT_MAX) + 1);
+			c = temp / (static_cast<long long unsigned>(UINT_MAX) + 1);
+		}
+		Sn.p[i + b.size] = c;
+	}
+	
+	unsigned m = 0;
+	auto i = Sn.size - 1;
+	while (Sn.p[i] == 0)
+	{
+		m++;
+		i--;
+	}
+	if (m > 0)
+	{
+		if (m == Sn.size)
+		{
+			m = Sn.size - 1;
+		}
+		lAdjust(Sn, Sn.size - m);
+	}
+	
+	return Sn;
+}
+
+lentier operator*(lentier a, lentier b)
+{
+	return mult_classique(a, b);
+}
+
+lentier mul_mod(const lentier a, const lentier b, const lentier N)
 {
 	return a;
 }
 
-lentier mul_mod(lentier a, lentier b, lentier N)
+
+/*
+lentier dec2lentier(char* nombre_dec)
 {
-	return a;
+	auto i = 0;
+	while (nombre_dec[i] != '\0')
+	{
+		nombre_dec[i] -= '0';
+		i++;
+	}
+
+	std::string s = std::to_string(0x100000000);
+	char const* base = s.c_str();
+
+	char* q = new char[strlen(nombre_dec) - strlen(base) + 1]();
+
+	char* r[strlen(base)];
+
+	while(sizeof(q))
+	for(auto c: q)
+	{
+		c = 0;
+	}
 }
+*/
