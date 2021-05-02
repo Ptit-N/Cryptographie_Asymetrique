@@ -68,6 +68,11 @@ lentier add_lentier(const lentier a, const lentier b)
 	return Sn;
 }
 
+lentier operator+(const lentier a, const lentier b)
+{
+	return add_lentier(a, b);
+}
+
 lentier sub_lentier(const lentier a, const lentier b)
 {
 	lentier Sn;
@@ -118,6 +123,11 @@ lentier sub_lentier(const lentier a, const lentier b)
 	}
 
 	return Sn;
+}
+
+lentier operator-(const lentier a, const lentier b)
+{
+	return sub_lentier(a, b);
 }
 
 char cmp_lentier(const lentier a, const lentier b)
@@ -176,8 +186,7 @@ bool operator==(const lentier a, const lentier b)
 
 bool operator>=(const lentier a, const lentier b)
 {
-	char i = cmp_lentier(a, b);
-	if (i == 1 || i == 0)
+	if (cmp_lentier(a, b) != -1)
 	{
 		return 1;
 	}
@@ -186,8 +195,7 @@ bool operator>=(const lentier a, const lentier b)
 
 bool operator<=(const lentier a, const lentier b)
 {
-	char i = cmp_lentier(a, b);
-	if (i == -1 || i == 0)
+	if (cmp_lentier(a, b) != 1)
 	{
 		return 1;
 	}

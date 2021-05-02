@@ -30,12 +30,16 @@ void lAdjust(lentier& a, const unsigned int nsize);
  */
 lentier add_lentier(const lentier a, const lentier b);
 
+lentier operator+(const lentier a, const lentier b);
+
 /*
  * E: deux lentiers
  * S: un lentier (la différence des deux paramètres)
  * R: fait la différence des deux lentiers passés en paramètre, si la taille du premier lentier est inférieur à celle du second, renvoie un lentier vide
  */
 lentier sub_lentier(const lentier a, const lentier b);
+
+lentier operator-(const lentier a, const lentier b);
 
 /*
  * E: Deux lentiers
@@ -45,7 +49,7 @@ lentier sub_lentier(const lentier a, const lentier b);
 char cmp_lentier(const lentier a, const lentier b);
 
 bool operator>(const lentier a, const lentier b);
-bool operator>(const lentier a, const lentier b);
+bool operator<(const lentier a, const lentier b);
 bool operator==(const lentier a, const lentier b);
 bool operator>=(const lentier a, const lentier b);
 bool operator<=(const lentier a, const lentier b);
