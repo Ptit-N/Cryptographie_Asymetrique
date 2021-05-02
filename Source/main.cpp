@@ -18,6 +18,7 @@ int main()
 	c = div_eucl(a, b);
 
 	Affiche_lentier(c);
+	cout << endl << c.size;
 	
 	delete[] a.p;
 	delete[] b.p;
