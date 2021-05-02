@@ -1,14 +1,8 @@
 #pragma once
 
-struct lentier
-{
-	unsigned int* p;
-	unsigned int size;
-	
-	
-	lentier operator%=(lentier a);
-};
+#include "Autres_Groupes/Others.h"
+
 
 lentier operator%(lentier a, lentier b);
 
-lentier div_eucl(lentier a, lentier b);
+lentier div_eucl(const lentier a, const lentier b);

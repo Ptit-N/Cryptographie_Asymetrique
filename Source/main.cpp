@@ -3,18 +3,24 @@
 
 using namespace std;
 
+
 int main()
 {
-	const unsigned int m(5);
-	const unsigned int n(10);
+	lentier a, b, c;
+	a.size = 4;
+	a.p = new unsigned[a.size];
+	b.size = 1;
+	b.p = new unsigned[b.size];
 	
-	lentier a{ new unsigned int[m](), m };
-	lentier b{ new unsigned int[n](), n };
+	a.p[3] = 83;
+	b.p[0] = 47;
 
-	a %= b;
+	c = div_eucl(a, b);
 
-	cout << a.size;
-
+	Affiche_lentier(c);
+	cout << endl << c.size;
+	
 	delete[] a.p;
 	delete[] b.p;
+	delete[] c.p;
 }
