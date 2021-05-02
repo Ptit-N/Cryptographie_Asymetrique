@@ -84,10 +84,10 @@ lentier div_eucl(const lentier a, const lentier b)
 
 	quotient.size = a.size - b.size + 1;
 	quotient.p = new unsigned[quotient.size]();								//1.
+	reste.size = b.size - 1;
+	reste.p = new unsigned[reste.size]();
 
 	facteur.size = quotient.size;
-	facteur.p = new unsigned[facteur.size]();
-	facteur.p[facteur.size - 1] = 1;
 
 	facteur = b * facteur;
 	
@@ -138,6 +138,8 @@ lentier div_eucl(const lentier a, const lentier b)
 	if(facteur.size != 0)													//Si a.size == b.size, on ne passe pas dans la boucle et facteur.p est delete juste avant
 	{
 		delete[] facteur.p;
+	{
+		
 	}
 	
 	return reste;
