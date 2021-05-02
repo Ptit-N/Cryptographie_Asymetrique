@@ -138,8 +138,6 @@ lentier div_eucl(const lentier a, const lentier b)
 	if(facteur.size != 0)													//Si a.size == b.size, on ne passe pas dans la boucle et facteur.p est delete juste avant
 	{
 		delete[] facteur.p;
-	{
-		
 	}
 	
 	return reste;
