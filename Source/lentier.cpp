@@ -40,13 +40,13 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		factA1.p = new unsigned[factA1.size]();
 		factA1.p[2] = reste.p[i];									//factA1 = A[i]*r² + A[i-1] * r + A[i - 2]
 		factA1.p[1] = reste.p[i - 1];
-		factA1.p[0] = ((reste.size > i - 2) ? reste.p[i - 2] : 0);
+		factA1.p[0] = reste.p[i - 2];
 
 
 		facteur.size = 2;
 		facteur.p = new unsigned[facteur.size]();
 		facteur.p[1] = b.p[b.size - 1];
-		facteur.p[0] = (b.size >= 2) ? b.p[b.size - 2] : 0;
+		facteur.p[0] =b.p[b.size - 2];
 
 		factQ.size = 1;
 		factQ.p = &quotient.p[i - b.size];
@@ -54,11 +54,12 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		ltemp = factQ * facteur;
 		while (ltemp > factA1)
 		{
-			temp = ltemp.p;
-			delete[] temp;
+			
 			quotient.p[i - b.size] -= 1;
 			factQ.p = &quotient.p[i - b.size];
+			temp = ltemp.p;
 			ltemp = factQ * facteur;
+			delete[] temp;
 		}
 
 		
@@ -76,7 +77,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 	}
 
 
-	quotient.size = a.size - b.size + 1;
+	quotient.size = a.size - b.size;
 	quotient.p = new unsigned[quotient.size]();								//1.
 
  	facteur.size = a.size;
@@ -89,13 +90,15 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 	while (reste >= facteur)												//2.
 	{
 		quotient.p[quotient.size - 1] += 1;
+		temp = reste.p;
 		reste = reste - facteur;
+		delete[] temp;
 	}
 
 	delete[] facteur.p;
 	facteur.size = 0;
 	
-	for(auto i = a.size - 1 ; i > b.size ; i--)		//i >= b.size ?				3.
+	for(auto i = a.size - 1 ; i >= b.size ; i--)						//3.
 	{
 		if(reste.p[i] == b.p[b.size - 1])												//a
 		{
@@ -120,6 +123,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			temp = reste.p;
 			reste = reste - facteur;
 			delete[] temp;
+			delete[] facteur.p;
 		}
 		else																			//d
 		{
@@ -133,12 +137,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			delete[] temp;
 
 			reste = reste - facteur;
+			delete[] facteur.p;
 		}
-	}
-	
-	if (facteur.size != 0)													//Si a.size == b.size, on ne passe pas dans la boucle et facteur.p est delete juste avant
-	{
-		delete[] facteur.p;
 	}
 
 	if (deux == 1)															//Ceci est un outrage à toutes les lois de la programmation que j'ai respecté dans ma vie
