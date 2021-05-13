@@ -2,8 +2,9 @@
 
 #include "Autres_Groupes/Others.h"
 
+lentier operator/(const lentier a, const lentier b);
 
-lentier operator%(lentier a, lentier b);
+lentier operator%(const lentier a, const lentier b);
 
 /*
  * R: Calcul le reste de la division euclidienne du lentier a par b

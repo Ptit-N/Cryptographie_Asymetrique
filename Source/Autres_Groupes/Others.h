@@ -7,6 +7,8 @@ struct lentier
 {
 	unsigned int* p;
 	unsigned int size;
+
+	lentier operator%=(lentier a);
 };
 
 /*
@@ -51,6 +53,7 @@ char cmp_lentier(const lentier a, const lentier b);
 bool operator>(const lentier a, const lentier b);
 bool operator<(const lentier a, const lentier b);
 bool operator==(const lentier a, const lentier b);
+bool operator!=(const lentier a, const lentier b);
 bool operator>=(const lentier a, const lentier b);
 bool operator<=(const lentier a, const lentier b);
 

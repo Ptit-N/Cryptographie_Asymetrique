@@ -8,6 +8,7 @@ void Affiche_lentier(const lentier a)
 	{
 		std::cout << a.p[i - 1] << ' ';
 	}
+	std::cout << std::endl;
 }
 
 void lAdjust(lentier& a, const unsigned int nsize)
@@ -182,6 +183,15 @@ bool operator==(const lentier a, const lentier b)
 		return 1;
 	}
 	return 0;
+}
+
+bool operator!=(const lentier a, const lentier b)
+{
+	if (cmp_lentier(a, b) == 0)
+	{
+		return 0;
+	}
+	return 1;
 }
 
 bool operator>=(const lentier a, const lentier b)
