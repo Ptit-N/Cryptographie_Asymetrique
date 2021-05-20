@@ -30,5 +30,5 @@ int main()
 	*/
 	//Pensez à la libération mémoire avant de faire un autre test
 	delete[]res.p;
-	/************ fin test 1 ***************/
+	/************ fin test 1 ***************///
 }
