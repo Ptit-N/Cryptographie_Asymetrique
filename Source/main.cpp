@@ -6,26 +6,29 @@ using namespace std;
 
 int main()
 {
-	unsigned int a[4] = { 0,990923518,777689008,794130497 };
-	unsigned int b[2] = { 0,2 };
-	lentier aa, *cc;
+	/* 1e jeu de données */
+//début copier/coller (dans votre main)
+	unsigned int a[16] = { 1009016003,540378588,500383539,1844070593,1466513372,1650588744,1029320739,1129628053,1702170207,1714609046,1722335134,1194869882,2014090221,1670181086,936288951,498019986 };
+	unsigned int b[16] = { 623813480,2034534499,820851623,1677628895,1062276253,1444921697,1032542446,547694594,497679205,884463544,1048859907,1500038160,929592401,1588601859,1761676516,1502622518 };
+	unsigned int N[16] = { 631413413,734851791,698305187,1648949548,436431178,286619713,557098206,1436558859,543705546,704455066,902118193,283339158,357638572,1618883111,646786249,2045356577 };
+	lentier aa;
 	aa.p = a;
-	aa.size = 4;
+	aa.size = 16;
 	lentier bb;
 	bb.p = b;
-	bb.size = 2;
-
-	cc = div_lentier(aa, bb);
-	Affiche_lentier(cc[0]);
-	Affiche_lentier(cc[1]);
-
-	lentier res2 = mult_classique(bb, cc[1]);
-	lentier res = mult_classique(bb, cc[0]);
-	lentier res3 = add_lentier(res, res2);
-	Affiche_lentier(res3);
-
-	delete[] res.p;
-	delete[] res2.p;
-	delete[] res3.p;
-	del_lentier_pointer(cc);
+	bb.size = 16;
+	lentier NN;
+	NN.p = N;
+	NN.size = 16;
+	lentier res;
+	res = exp_mod(aa, bb, NN);
+	Affiche_lentier(res);
+	//fin copier/coller
+	/*
+	Résultat attendu:
+	{3577248614,1088852775,2673576137,1066220801,592103025,3455607712,760091953,3720316336,3684356675,2938667974,2292421365,2626684002,3582190762,704633395,1964810293,250614895};
+	*/
+	//Pensez à la libération mémoire avant de faire un autre test
+	delete[]res.p;
+	/************ fin test 1 ***************/
 }

@@ -254,11 +254,91 @@ lentier operator*(lentier a, lentier b)
 	return mult_classique(a, b);
 }
 
-lentier mul_mod(const lentier a, const lentier b, const lentier N)
+lentier lentier::operator*=(lentier a)
 {
-	return a;
+	unsigned* temp = this->p;
+	*this = *this * a;
+	delete[] temp;
+
+	return *this;
 }
 
+lentier mul_mod(const lentier a, const lentier b, const lentier N)
+{
+	lentier aa, bb;
+	aa.size = a.size;
+	aa.p = new unsigned[aa.size]();
+	bb.size = b.size;
+	bb.p = new unsigned[bb.size]();
+
+	for (unsigned i = 0; i < aa.size; i++)
+	{
+		aa.p[i] = a.p[i];
+	}
+	for (unsigned i = 0; i < bb.size; i++)
+	{
+		bb.p[i] = b.p[i];
+	}
+
+	if (aa > N)
+	{
+		aa %= N;
+	}
+	if (bb > N)
+	{
+		bb %= N;
+	}
+
+	lentier P = aa * bb;
+	P %= N;
+
+	delete[] aa.p;
+	delete[] bb.p;
+
+	return P;
+}
+
+lentier exp_mod(const lentier a, const lentier x, const lentier N)
+{
+	lentier P;
+	unsigned* temp;
+	P.size = a.size;
+	P.p = new unsigned[P.size]();
+	for (unsigned i = 0; i < P.size; i++)
+	{
+		P.p[i] = a.p[i];
+	}
+
+	for (char i = (char)log2(x.p[x.size - 1]) - 1; i > -1; i--)
+	{
+		temp = P.p;
+		P = mul_mod(P, P, N);
+		delete[] temp;
+		if (x.p[x.size - 1] & (0x00000001 << i))
+		{
+			temp = P.p;
+			P = mul_mod(P, a, N);
+			delete[] temp;
+		}
+	}
+	for (unsigned i = x.size - 1; i > 0; i--)
+	{
+		for (char j = 31; j > -1; j--)
+		{
+			temp = P.p;
+			P = mul_mod(P, P, N);
+			delete[] temp;
+			if (x.p[i - 1] & (0x00000001 << j))
+			{
+				temp = P.p;
+				P = mul_mod(P, a, N);
+				delete[] temp;
+			}
+		}
+	}
+
+	return P;
+}
 
 /*
 lentier dec2lentier(char* nombre_dec)

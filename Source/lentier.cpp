@@ -9,6 +9,15 @@ lentier lentier::operator%=(lentier a)
 	return *this;
 }
 
+lentier lentier::operator/=(lentier a)
+{
+	unsigned* temp = this->p;
+	*this = *this / a;
+	delete[] temp;
+
+	return *this;
+}
+
 lentier operator/(const lentier a, const lentier b)
 {
 	lentier Sn, *c;
@@ -17,7 +26,7 @@ lentier operator/(const lentier a, const lentier b)
 	Sn = c[0];
 
 	delete[] c[1].p;
-	delete &c[1];
+	delete[] c;
 	
 	return Sn;
 }
@@ -225,7 +234,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		facteur.p = new unsigned[facteur.size]();
 		if(reste.size > 1)
 		{
-			for (unsigned i = 0; i < facteur.size - 2; i++)
+			for (unsigned i = 0; i < facteur.size - 1; i++)
 			{
 				facteur.p[i] = (reste.p[i + 1] << m) | (reste.p[i] >> (32 - m));
 			}
@@ -235,9 +244,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		{
 			lAdjust(facteur, facteur.size - 1);
 		}
-		temp = reste.p;
+		delete[] reste.p;
 		reste = facteur;
-		delete[] temp;
 	}
 	
 	if (deux == 1)															//Ceci est un outrage à toutes les lois de la programmation que j'ai respecté dans ma vie

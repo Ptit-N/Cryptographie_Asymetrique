@@ -9,6 +9,8 @@ struct lentier
 	unsigned int size;
 
 	lentier operator%=(lentier a);
+	lentier operator/=(lentier a);
+	lentier operator*=(lentier a);
 };
 
 /*
