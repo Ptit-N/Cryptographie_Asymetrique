@@ -40,11 +40,55 @@ lentier operator%(const lentier a, const lentier b)
 
 lentier div_eucl(const lentier a, const lentier b, const bool deux)
 {
-	if(a.size == 0 || b.size == 0 || (b.size == 1 && b.p[0] == 0) || a < b)					//Conditions à respecter pour le bon fonctionnement du programme
+	if(a.size == 0 || b.size == 0 || (b.size == 1 && b.p[0] == 0))					//Conditions à respecter pour le bon fonctionnement du programme
 	{
 		lentier reste;
 		reste.size = 0;
 		reste.p = nullptr;
+
+		if (deux)
+		{
+			lentier both, * pass;
+			both.size = 1;
+			both.p = new unsigned[both.size];
+			pass = new lentier[2];
+
+			pass[0].size = 0;
+			pass[0].p = nullptr;
+			pass[1] = reste;
+
+			both.p[0] = (unsigned)pass;
+
+			return both;
+		}
+
+		return reste;
+	}
+	if (a < b)
+	{
+		lentier reste;
+		reste.size = a.size;
+		reste.p = new unsigned[reste.size];
+		for (unsigned i = 0; i < reste.size; i++)
+		{
+			reste.p[i] = a.p[i];
+		}
+
+		if (deux)
+		{
+			lentier both, * pass;
+			both.size = 1;
+			both.p = new unsigned[both.size];
+			pass = new lentier[2];
+
+			pass[0].size = 1;
+			pass[0].p = new unsigned[pass[0].size]();
+			pass[1] = reste;
+
+			both.p[0] = (unsigned)pass;
+
+			return both;
+		}
 
 		return reste;
 	}
@@ -274,11 +318,4 @@ lentier* div_lentier(const lentier a, const lentier b)
 	c = div_eucl(a, b, 1);
 	pass = (lentier*)c.p[0];
 	return pass;
-}
-
-void del_lentier_pointer(lentier* a)
-{
-	delete[] a[0].p;
-	delete[] a[1].p;
-	delete[] a;
 }

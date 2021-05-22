@@ -1,6 +1,5 @@
-#include "Others.h"
+#include "../lentier.h"
 
-#include <charconv>
 
 void Affiche_lentier(const lentier a)
 {
@@ -225,7 +224,7 @@ lentier mult_classique(const lentier a, const lentier b)
 		{
 			long long unsigned temp = Sn.p[i + j] + static_cast<long long unsigned>(a.p[i]) * b.p[j] + c;
 			Sn.p[i + j] = temp % (static_cast<long long unsigned>(UINT_MAX) + 1);
-			c = temp / (static_cast<long long unsigned>(UINT_MAX) + 1);
+			c = static_cast<unsigned>(temp / (static_cast<long long unsigned>(UINT_MAX) + 1));
 		}
 		Sn.p[i + b.size] = c;
 	}
@@ -340,27 +339,131 @@ lentier exp_mod(const lentier a, const lentier x, const lentier N)
 	return P;
 }
 
-/*
-lentier dec2lentier(char* nombre_dec)
+lentier dec2lentier(const char* nombre_dec)
 {
-	auto i = 0;
-	while (nombre_dec[i] != '\0')
+	struct lchar
 	{
-		nombre_dec[i] -= '0';
-		i++;
+		char* p;
+		long long size;
+	};
+
+	lchar nb;
+	nb.size = 0;
+	while (nombre_dec[nb.size] != '\0')
+	{
+		nb.size++;
+	}
+	nb.p = new char[nb.size]();
+
+	for (auto i = 0; i < nb.size; i++)
+	{
+		nb.p[i] = nombre_dec[i] - 48;
 	}
 
-	std::string s = std::to_string(0x100000000);
-	char const* base = s.c_str();
+	lentier Sn;
+	Sn.size = (unsigned)((((long double)nb.size * log(10)) / log(0x100000000)) + 1);
+	Sn.p = new unsigned[Sn.size]();
 
-	char* q = new char[strlen(nombre_dec) - strlen(base) + 1]();
-
-	char* r[strlen(base)];
-
-	while(sizeof(q))
-	for(auto c: q)
+	for (unsigned i = 0; i < Sn.size - 1; i++)
 	{
-		c = 0;
+		for (char j = 0; j < 32; j++)
+		{
+			if (nb.p[nb.size - 1] & 1)
+			{
+				Sn.p[i] += 1 << j;
+				nb.p[nb.size - 1] = nb.p[nb.size - 1] - 1;
+			}
+			for (long long k = nb.size - 1; k >= 0; k--)
+			{
+				if (nb.p[k] & 1)
+				{
+					nb.p[k + 1] += 5;
+					nb.p[k] -= 1;
+				}
+				nb.p[k] /= 2;
+			}
+		}
 	}
+	for(char j = 0; j < (char) nb.size; j++)
+	{
+		if (nb.p[nb.size - 1] & 1)
+		{
+			Sn.p[Sn.size - 1] += 1 << j;
+			nb.p[nb.size - 1] = nb.p[nb.size - 1] - 1;
+		}
+		for (long long k = nb.size - 1; k >= 0; k--)
+		{
+			if (nb.p[k] & 1)
+			{
+				nb.p[k + 1] += 5;
+				nb.p[k] -= 1;
+			}
+			nb.p[k] /= 2;
+		}
+	}
+
+	delete[] nb.p;
+	
+	return Sn;
 }
-*/
+
+char* lentier2dec(const lentier a)
+{
+	const long long size = (long long)((a.size * (long double)log(0x100000000)) / (long double)log(10)) + 2;
+	char* chr = new char[size]();
+
+	lentier quotient, reste, diviseur, * pointeur;
+	quotient.size = a.size;
+	quotient.p = new unsigned[quotient.size];
+	for (unsigned i = 0; i < quotient.size; i++)
+	{
+		quotient.p[i] = a.p[i];
+	}
+
+	reste.p = nullptr;
+
+	diviseur.size = 1;
+	diviseur.p = new unsigned[diviseur.size]();
+	diviseur.p[0] = 1000000000;
+
+	long long it = size - 1;
+
+	while(!(quotient.p[0] == 0 && quotient.size == 1))
+	{
+		pointeur = div_lentier(quotient, diviseur);
+		delete[] quotient.p;
+		delete[] reste.p;
+		quotient = pointeur[0];
+		reste = pointeur[1];
+		delete[] pointeur;
+		for (long long j = it; (j > it - 9) && j >= 1; j--)
+		{
+			if (j > 0)
+			{
+				chr[j - 1] = (reste.p[0] % 10) + 48;
+				reste.p[0] /= 10;
+			}
+		}
+		it -= 9;
+	}
+
+	it = 0;
+
+	for (long long i = 0; (i < size) && (chr[i] == 0); i++) it++;
+
+	char* temp = chr;
+	it = size - it;
+	chr = new char[it];
+	chr[it - 1] = '\0';
+	for (auto i = 2; i <= it; i++)
+	{
+		chr[it - i] = temp[size - i];
+	}
+	delete[] temp;
+
+	delete[] quotient.p;
+	delete[] reste.p;
+	delete[] diviseur.p;
+
+	return chr;
+}
