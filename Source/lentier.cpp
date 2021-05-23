@@ -64,7 +64,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 		return reste;
 	}
-	if (a < b)
+	if (a < b)									//Renvoi du divisé comme reste si inférieur au diviseur
 	{
 		lentier reste;
 		reste.size = a.size;
@@ -105,7 +105,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		n >>= 1;
 	}
 	
-	if(m != 32)
+	if(m != 32)					//Normalisation des termes de l'opération
 	{
 		if(static_cast<unsigned>(log2(a.p[a.size - 1])) > m)
 		{
@@ -272,7 +272,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if(B.p != b.p) delete[] B.p;
 
-	if (m != 32)
+	if (m != 32)					//Inversion de la normalisation
 	{
 		facteur.size = reste.size;
 		facteur.p = new unsigned[facteur.size]();
@@ -292,7 +292,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		reste = facteur;
 	}
 	
-	if (deux == 1)															//Ceci est un outrage à toutes les lois de la programmation que j'ai respecté dans ma vie
+	if (deux == 1)
 	{
 		lentier both, *pass;
 		both.size = 1;
