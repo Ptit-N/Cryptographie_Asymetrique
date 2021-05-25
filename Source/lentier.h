@@ -10,6 +10,7 @@ struct lentier
 	lentier operator%=(lentier a);
 	lentier operator/=(lentier a);
 	lentier operator*=(lentier a);
+	lentier operator-=(lentier a);
 };
 
 /*

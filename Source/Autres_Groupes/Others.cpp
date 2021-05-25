@@ -130,6 +130,15 @@ lentier operator-(const lentier a, const lentier b)
 	return sub_lentier(a, b);
 }
 
+lentier lentier::operator-=(lentier a)
+{
+	unsigned* temp = this->p;
+	*this = *this - a;
+	delete[] temp;
+
+	return *this;
+}
+
 char cmp_lentier(const lentier a, const lentier b)
 {
 	if(a.size > b.size)
@@ -449,7 +458,7 @@ char* lentier2dec(const lentier a)
 
 	it = 0;
 
-	for (long long i = 0; (i < size) && (chr[i] == 0); i++) it++;
+	for (long long i = 0; (i < size) && (chr[i] == '0'); i++) it++;
 
 	char* temp = chr;
 	it = size - it;

@@ -93,17 +93,10 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		return reste;
 	}
 
-	lentier quotient, reste, B, facteur;
-	unsigned int* temp;										//reste est l'équivalent de A dans l'algorithme
+	lentier quotient, reste, B, facteur;					//reste est l'équivalent de A dans l'algorithme
 	
 	
-	unsigned char m = 0;
-	unsigned int n = b.p[b.size - 1];
-	while(n != 0)
-	{
-		m++;
-		n >>= 1;
-	}
+	const unsigned char m = static_cast<unsigned char>(log2(b.p[b.size - 1]) + 1);
 	
 	if(m != 32)					//Normalisation des termes de l'opération
 	{
@@ -163,8 +156,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		for (auto i = reste.size - 1; i >= 1; i--)
 		{
 			quotient.p[i - 1] = static_cast<unsigned>((reste.p[i] * static_cast<long long unsigned>(0x100000000) + reste.p[i - 1]) / B.p[0]);
-			reste.p[i] -= static_cast<unsigned>((static_cast<unsigned long long>(quotient.p[i - 1]) * B.p[0]) >> 32);
-			reste.p[i - 1] -= static_cast<unsigned>((static_cast<unsigned long long>(quotient.p[i - 1]) * B.p[0]) & 0xFFFFFFFF);
+			reste.p[i] = 0;
+			reste.p[i - 1] -= static_cast<unsigned>(quotient.p[i - 1] * B.p[0]);
 		}
 
 		lAdjust(reste, 1);
@@ -181,9 +174,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		while (reste >= facteur)												//2.
 		{
 			quotient.p[quotient.size - 1] += 1;
-			temp = reste.p;
-			reste = reste - facteur;
-			delete[] temp;
+			reste -= facteur;
 		}
 
 		delete[] facteur.p;
@@ -200,11 +191,10 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 				quotient.p[i - B.size] = static_cast<unsigned>((reste.p[i] * static_cast<long long unsigned>(0x100000000) + reste.p[i - 1]) / B.p[B.size - 1]);
 			}
 
-			//Toute cette lambda ne sert qu'à éviter un overflow lors du calcul de la condition d'une boucle et éviter de garder toutes les variables temporaires créées en mémoire
-			[&B, &quotient, &reste, i]() mutable -> void
+			//Toute cette partie ne sert qu'à éviter un overflow lors du calcul de la condition d'une boucle et éviter de garder toutes les variables temporaires créées en mémoire
 			{
 				lentier factQ, factA1, ltemp, facteur;					//Chacun des termes de la condition à vérifier risque de dépasser les 64 bits de mémoires (taille max d'une variable)
-				unsigned* temp;										//facteur sera utilisé en tant que factB
+																		//facteur sera utilisé en tant que factB
 
 				factA1.size = 3;
 				factA1.p = new unsigned[factA1.size]();
@@ -224,32 +214,25 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 				ltemp = factQ * facteur;
 				while (ltemp > factA1)
 				{
-
-					quotient.p[i - B.size] -= 1;
-					factQ.p = &quotient.p[i - B.size];
-					temp = ltemp.p;
+					factQ.p[0]--;
+					delete[] ltemp.p;
 					ltemp = factQ * facteur;
-					delete[] temp;
 				}
 
 
 				delete[] factA1.p;
 				delete[] facteur.p;
 				delete[] ltemp.p;
-			}();													//b			c'est comme un appel de fonction, la définition de lambda est au début de div_eucl
+			}													//b			c'est comme un appel de fonction, la définition de lambda est au début de div_eucl
 
 			facteur.size = i - B.size + 1;
 			facteur.p = new unsigned[facteur.size]();
 			facteur.p[facteur.size - 1] = quotient.p[i - B.size];
-			temp = facteur.p;
-			facteur = B * facteur;
-			delete[] temp;
+			facteur *= B;
 
 			if (reste >= facteur)															//c
 			{
-				temp = reste.p;
-				reste = reste - facteur;
-				delete[] temp;
+				reste -= facteur;
 				delete[] facteur.p;
 			}
 			else																			//d
@@ -259,18 +242,13 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 				lAdjust(facteur, i - B.size + 1);
 
 				facteur.p[facteur.size - 1] = quotient.p[i - B.size];
-				temp = facteur.p;
-				facteur = B * facteur;
-				delete[] temp;
+				facteur *= B;
 
-				reste = reste - facteur;
+				reste -= facteur;
 				delete[] facteur.p;
 			}
 		}
 	}
-	
-
-	if(B.p != b.p) delete[] B.p;
 
 	if (m != 32)					//Inversion de la normalisation
 	{
@@ -290,12 +268,13 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		}
 		delete[] reste.p;
 		reste = facteur;
+		delete[] B.p;
 	}
 	
-	if (deux == 1)
+	if (deux == 1)				//Le programme peut désormais être sur 64bits
 	{
 		lentier both, *pass;
-		both.size = 1;
+		both.size = 2;
 		both.p = new unsigned[both.size];
 		pass = new lentier[2];
 
@@ -303,6 +282,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		pass[1] = reste;
 		
 		both.p[0] = (unsigned) pass;
+		both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
 
 		return both;
 	}
@@ -314,8 +294,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 lentier* div_lentier(const lentier a, const lentier b)
 {
-	lentier c, *pass;
-	c = div_eucl(a, b, 1);
-	pass = (lentier*)c.p[0];
+	lentier both, *pass;
+	both = div_eucl(a, b, 1);
+	pass = (lentier*)((unsigned long long)both.p[1] * 0x100000000 + both.p[0]);
 	return pass;
 }
