@@ -58,6 +58,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			pass[1] = reste;
 
 			both.p[0] = (unsigned)pass;
+			both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
 
 			return both;
 		}
@@ -86,6 +87,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			pass[1] = reste;
 
 			both.p[0] = (unsigned)pass;
+			both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
 
 			return both;
 		}
