@@ -151,7 +151,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			}
 			else
 			{
-				quotient.p[i - B.size] = static_cast<unsigned>((reste.p[i] * 0x100000000 + reste.p[i - 1]) / B.p[B.size - 1]);
+				quotient.p[i - B.size] = static_cast<unsigned>((reste.p[i] * (unsigned long long)0x100000000 + reste.p[i - 1]) / B.p[B.size - 1]);
 			}
 
 			//b
