@@ -6,20 +6,25 @@ using namespace std;
 
 int main()
 {
-	//début copier/coller (dans votre main)
-	unsigned int aa[3] = { 1806659176,1021366019,527857808 };
-	lentier a;
-	a.p = aa;
-	a.size = 3;
-	char* s = lentier2dec(a);
-	cout << s << endl;
+	/* 1e jeu de données */
+//début copier/coller (dans votre main)
+	unsigned int a[22] = { 293034349,844693298,1814842293,1421314185,1691207896,638289000,1203477101,142092880,1302074739,1610018115,1744525153,533928273,877033824,1257548275,188620824,2103662577,2096614944,43564234,1104628350,1081595238,1007305067,1953312632 };
+	unsigned int b[13] = { 1125228701,2090755820,864880040,89957166,1761468921,720997415,10652816,594182948,1691339135,303687165,1438876247,1358697781,3872484998 };
+	lentier aa;
+	aa.p = a;
+	aa.size = 22;
+	lentier bb;
+	bb.p = b;
+	bb.size = 13;
+	lentier res;
+	res = div_eucl(aa, bb);
+	Affiche_lentier(res);
 	//fin copier/coller
 	/*
 	Résultat attendu:
-	9737257895872047995341991528
+	{1701055259,2437423851,1634014391,3166386563,3335268908,2490487792,3435823235,429906975,426599418,1820046964,3402462427,47390074,1653958660};
 	*/
 	//Pensez à la libération mémoire avant de faire un autre test
-	delete[]s;
+	delete[]res.p;
 	/************ fin test 1 ***************/
-
 }
