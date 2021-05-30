@@ -2,7 +2,7 @@
 
 lentier div_eucl(const lentier a, const lentier b, const bool deux)
 {
-	if(a.size == 0 || b.size == 0 || (b.size == 1 && b.p[0] == 0))					//Situations compromettant le bon fonctionnement du programme
+	if (a.size == 0 || b.size == 0 || (b.size == 1 && b.p[0] == 0))					//Situations compromettant le bon fonctionnement du programme
 	{
 		lentier reste;
 		reste.size = 0;
@@ -58,13 +58,13 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 	}
 
 	lentier quotient, reste, B, facteur;					//reste est l'équivalent de A dans l'algorithme
-	
-	
+
+
 	const unsigned char m = static_cast<unsigned char>(log2(b.p[b.size - 1]) + 1);
-	
-	if(m != 32)					//Normalisation des termes de l'opération
+
+	if (m != 32)					//Normalisation des termes de l'opération
 	{
-		if(static_cast<unsigned>(log2(a.p[a.size - 1])) > m)	//overflow
+		if (static_cast<unsigned>(log2(a.p[a.size - 1]) + 1) > m)	//overflow
 		{
 			reste.size = a.size + 1;
 		}
@@ -74,11 +74,11 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		}
 		reste.p = new unsigned[reste.size];
 
-		if(reste.size == a.size + 1)
+		if (reste.size == a.size + 1)
 		{
 			reste.p[reste.size - 1] = a.p[a.size - 1] >> m;
 		}
-		if(a.size > 1)
+		if (a.size > 1)
 		{
 			for (unsigned i = a.size - 1; i > 0; i--)
 			{
@@ -105,19 +105,19 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		}
 		B = b;
 	}
-	
-	quotient.size = reste.size - B.size;
+
+	quotient.size = reste.size - B.size + 1;
 	quotient.p = new unsigned[quotient.size]();								//1.
-	
-	if(B.size == 1)																//Optimisation si le diviseur n'a qu'un seul chiffre
+
+	if (B.size == 1)																//Optimisation si le diviseur n'a qu'un seul chiffre
 	{
-		if(reste.p[reste.size - 1] >= B.p[0])
+		if (reste.p[reste.size - 1] >= B.p[0])
 		{
 			quotient.p[quotient.size - 1] += reste.p[reste.size - 1] / B.p[0];
 			reste.p[reste.size - 1] %= B.p[0];
 		}
 
-		for (auto i = reste.size - 1; i >= 1; i--)
+		for (auto i = reste.size - 1; i > 0; i--)
 		{
 			quotient.p[i - 1] = static_cast<unsigned>((reste.p[i] * static_cast<long long unsigned>(0x100000000) + reste.p[i - 1]) / B.p[0]);
 			reste.p[i - 1] -= static_cast<unsigned>(quotient.p[i - 1] * B.p[0]);
@@ -191,7 +191,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			else																			//d
 			{
 				quotient.p[i - B.size]--;
-				
+
 				lAdjust(facteur, i - B.size + 1);
 
 				facteur.p[facteur.size - 1] = quotient.p[i - B.size];
@@ -205,41 +205,43 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if (m != 32)					//Inversion de la normalisation
 	{
-		if(reste.size > 1)
+		if (reste.size > 1)
 		{
 			for (unsigned i = 0; i < reste.size - 1; i++)
 			{
 				reste.p[i] = (reste.p[i + 1] << m) | (reste.p[i] >> (32 - m));
 			}
 		}
-		reste.p[facteur.size - 1] = reste.p[reste.size - 1] >> (32 - m);
+		reste.p[reste.size - 1] = reste.p[reste.size - 1] >> (32 - m);
 
 		if (reste.p[reste.size - 1] == 0 && reste.size > 1)
 		{
 			lAdjust(reste, reste.size - 1);
 		}
-		
+
 		delete[] B.p;
 	}
-	
+
 	if (deux == 1)
 	{
-		lentier both, *pass;
+		if (quotient.p[quotient.size - 1] == 0) lAdjust(quotient, quotient.size - 1);
+
+		lentier both, * pass;
 		both.size = 2;
 		both.p = new unsigned[both.size];
 		pass = new lentier[2];
 
 		pass[0] = quotient;
 		pass[1] = reste;
-		
-		both.p[0] = (unsigned) pass;
+
+		both.p[0] = (unsigned)pass;
 		both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
 
 		return both;
 	}
-	
+
 	delete[] quotient.p;
-	
+
 	return reste;
 }
 
