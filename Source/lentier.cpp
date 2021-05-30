@@ -102,7 +102,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if (m != 32)					//Normalisation des termes de l'opération
 	{
-		if (static_cast<unsigned>(log2(a.p[a.size - 1])) > m)	//overflow
+		if (static_cast<unsigned>(log2(a.p[a.size - 1]) + 1) > m)	//overflow
 		{
 			reste.size = a.size + 1;
 		}
@@ -144,7 +144,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		B = b;
 	}
 
-	quotient.size = reste.size - B.size;
+	quotient.size = reste.size - B.size + 1;
 	quotient.p = new unsigned[quotient.size]();								//1.
 
 	if (B.size == 1)																//Optimisation si le diviseur n'a qu'un seul chiffre
@@ -155,7 +155,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			reste.p[reste.size - 1] %= B.p[0];
 		}
 
-		for (auto i = reste.size - 1; i >= 1; i--)
+		for (auto i = reste.size - 1; i > 0; i--)
 		{
 			quotient.p[i - 1] = static_cast<unsigned>((reste.p[i] * static_cast<long long unsigned>(0x100000000) + reste.p[i - 1]) / B.p[0]);
 			reste.p[i - 1] -= static_cast<unsigned>(quotient.p[i - 1] * B.p[0]);
@@ -250,7 +250,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 				reste.p[i] = (reste.p[i + 1] << m) | (reste.p[i] >> (32 - m));
 			}
 		}
-		reste.p[facteur.size - 1] = reste.p[reste.size - 1] >> (32 - m);
+		reste.p[reste.size - 1] = reste.p[reste.size - 1] >> (32 - m);
 
 		if (reste.p[reste.size - 1] == 0 && reste.size > 1)
 		{
@@ -262,6 +262,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if (deux == 1)
 	{
+		if (quotient.p[quotient.size - 1] == 0) lAdjust(quotient, quotient.size - 1);
+		
 		lentier both, * pass;
 		both.size = 2;
 		both.p = new unsigned[both.size];
