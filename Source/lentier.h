@@ -91,6 +91,13 @@ bool operator<=(const lentier a, const lentier b);
 lentier div_eucl(const lentier a, const lentier b, const bool deux = 0);
 
 /*
+ * R: Crée un lentier de deux cases mémoire qui contient l'adresse d'un tableau réunissant les lentiers passés en paramètre
+ * E: deux lentiers: a, b
+ * S: un lentier qui contient une adresse (nécessite sa retransformation à l'aide d'un cast pour récupérer le tableau)
+ */
+lentier merge_2lentiers(const lentier a, const lentier b);
+
+/*
  * R: Calcul le quotient entier et le reste de la division du lentier a par b
  * E: Deux lentiers: a et b
  * S: Un pointeur lentier pointant vers deux lentiers: [0]: le quotient, [1]: le reste
