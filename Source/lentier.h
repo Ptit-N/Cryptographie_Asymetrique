@@ -11,6 +11,7 @@ struct lentier
 	lentier operator-=(lentier a);
 };
 
+//R: Surcharges d'opérateurs, permet l'utilisation des opérateurs surchargés pour le type lentier
 lentier operator*(lentier a, lentier b);
 
 bool operator>(const lentier a, const lentier b);

@@ -142,7 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\lentier.cpp" />
-    <ClCompile Include="Source\main.cpp" />
+    <ClCompile Include="Source\main_lentier_2021.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\lentier.h" />

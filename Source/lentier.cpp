@@ -2,6 +2,7 @@
 
 lentier div_eucl(const lentier a, const lentier b, const bool deux)
 {
+	//Cas où l'on n'a pas besoin d'exécuter la fonction
 	if (a.size == 0 || b.size == 0 || (b.size == 1 && b.p[0] == 0))					//Situations compromettant le bon fonctionnement du programme
 	{
 		lentier reste;
@@ -57,12 +58,14 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		return reste;
 	}
 
+	//Lexique local
 	lentier quotient, reste, B, facteur;					//reste est l'équivalent de A dans l'algorithme
-
 
 	const unsigned char m = static_cast<unsigned char>(log2(b.p[b.size - 1]) + 1);
 
-	if (m != 32)					//Normalisation des termes de l'opération
+
+	//Normalisation des termes de l'opération si nécessaire
+	if (m != 32)
 	{
 		if (static_cast<unsigned>(log2(a.p[a.size - 1]) + 1) > m)	//overflow
 		{
@@ -106,6 +109,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		B = b;
 	}
 
+	//Instructions principales de la fonction
+	
 	quotient.size = reste.size - B.size + 1;
 	quotient.p = new unsigned[quotient.size]();								//1.
 
@@ -203,7 +208,8 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		}
 	}
 
-	if (m != 32)					//Inversion de la normalisation
+	//Inversion de la normalisation
+	if (m != 32)
 	{
 		if (reste.size > 1)
 		{
@@ -222,7 +228,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		delete[] B.p;
 	}
 
-	if (deux == 1)
+	if (deux == 1)			//Cette partie n'est exécutée que lors que cette fonction est appelée par la fonction div_lentier()
 	{
 		if (quotient.p[quotient.size - 1] == 0) lAdjust(quotient, quotient.size - 1);
 
@@ -234,8 +240,9 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 		pass[0] = quotient;
 		pass[1] = reste;
 
-		both.p[0] = (unsigned)pass;
-		both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
+		//Transforme un pointeur en lentier simple pour être retourné avant d'être retransformé en pointeur
+		both.p[0] = (unsigned)pass;		//both.p contient l'adresse du lentier quotient (pass[0], reste est toujours situé à &pass[0] + 1)
+		both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);	//Nécessaire si le programme est build en 64bits
 
 		return both;
 	}
@@ -249,7 +256,12 @@ lentier* div_lentier(const lentier a, const lentier b)
 {
 	lentier both, *pass;
 	both = div_eucl(a, b, 1);
+
+	/* Retransforme le lentier en pointeur
+	 * Ainsi, pass[0] = quotient et pass[1] = reste
+	 */
 	pass = (lentier*)((unsigned long long)both.p[1] * 0x100000000 + both.p[0]);
+	delete[] both.p;
 	return pass;
 }
 
