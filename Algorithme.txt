@@ -1,0 +1,470 @@
+lentier.h
+
+	lentier : un type composé de
+			<
+				p 	 : une adresse vers un entier non-signé
+				size : un entier non-signé
+				
+				{ R: Permet de calculer le produit du lentier manipulé par le lentier donné en paramètre
+				  E: a : un lentier
+				  S: un lentier}
+				Operator*= : la fonction (a : un lentier) -> un lentier
+				
+				{ R: Permet de calculer la différence du lentier manipulé et du lentier donné en paramètre
+				  E: a : un lentier
+				  S: un lentier}
+				Operator-= : la fonction (a : un lentier) -> un lentier
+			>
+	
+	{ R: Permet de calculer le produit du lentier a par le lentier b
+	  E: Deux lentiers: a, b
+	  S: un lentier}
+	Operator* : la fonction(a: un lentier, b: un lentier) -> un lentier
+	
+	{ R: Renvoie True si le lentier a est supérieur au lentier b
+	  E: Deux lentiers: a, b
+	  S: Un booléen}
+	Operator> : la fonction(a: un lentier, b: un lentier) -> un booléen
+	
+	{ R: Renvoie True si le lentier a est inférieur au lentier b
+	  E: Deux lentiers: a, b
+	  S: Un booléen}
+	Operator< : la fonction(a: un lentier, b: un lentier) -> un booléen
+	
+	{ R: Renvoie True si le lentier a est supérieur ou égal au lentier b
+	  E: Deux lentiers: a, b
+	  S: Un booléen}
+	Operator>= : la fonction(a: un lentier, b: un lentier) -> un booléen
+	
+	{ R: Calcul le reste de la division euclidienne du lentier a par b
+	  E: Deux lentiers: a et b
+	  S: Un lentier: le reste de a par b}
+	Div_eucl : la fonction(a: un lentier, b: un lentier, deux: un booléen := FAUX) -> un lentier
+	
+	{ R: Crée un lentier de deux cases mémoire qui contient l'adresse d'un tableau réunissant les lentiers passés en paramètre
+	  E: deux lentiers: a, b
+	  S: un lentier qui contient une adresse (nécessite sa retransformation à l'aide d'un cast pour récupérer le tableau)}
+	Merge_2lentiers : la fonction(a: un lentier, b: un lentier) -> un lentier
+	
+	{ R: Calcul le quotient entier et le reste de la division euclidienne du lentier a par b
+	  E: Deux lentiers: a et b
+	  S: Une adresse dynamique vers deux lentiers: [0]: le quotient, [1]: le reste}
+	Div_lentier : la fonction (a: un lentier, b: un lentier) -> une adresse vers deux lentiers
+	
+	{ R: Alloue dynamiquement de la mémoire à l'adresse donnée en paramètre
+	  E: size: un entier non-signé, type: un type
+	  S: une adresse vers un espace mémoire de size type}
+	Allouer : la fonction(size: un entier non-signé, type: un type) -> une adresse vers un tableau de size type
+
+	{ R: Libère la mémoire allouée dynamiquement à l'adresse donnée en paramètre
+	  E: pointeur: une adresse
+	  S: vide}
+	Libérer : la fonction(pointeur: une adresse) -> vide
+
+
+lentier.cpp
+
+
+
+	lentier::Operator*= : la fonction (a: un lentier) -> un lentier
+	Lexique local:
+	
+		temp: une adresse vers un entier non-signé
+	
+	Algorithme local:
+	Début
+	
+		temp  <- this->p
+		*this <- Mult_classique(*this, a)
+		Libérer(temp)
+		
+		Retourner *this
+	
+	Fin
+	
+	
+	
+	
+	lentier::Operator-= : la fonction (a: un lentier) -> un lentier
+	Lexique local:
+	
+		temp: une adresse vers un entier non-signé
+	
+	Algorithme local:
+	Début
+	
+		temp  <- this->p
+		*this <- Sub_lentier(*this, a)
+		Libérer(temp)
+		
+		Retourner *this
+	
+	Fin
+	
+	
+	
+	
+	Operator* : la fonction(a: un lentier, b: un lentier) -> un lentier
+	Lexique local:
+	
+		vide
+	
+	Algorithme local:
+	Début
+	
+		Retourner Mult_classique(a, b)
+	
+	Fin
+	
+	
+	
+	
+	Operator> : la fonction(a: un lentier, b: un lentier) -> un booléen
+	Lexique local:
+	
+		vide
+	
+	Algorithme local:
+	Début
+	
+		Si (Cmp_lentier(a, b) = 1)
+			Alors
+				Retourner VRAI
+			Sinon
+				Retourner FAUX
+		FinSi
+	
+	Fin
+	
+	
+	
+	
+	Operator< : la fonction(a: un lentier, b: un lentier) -> un booléen
+	Lexique local:
+	
+		vide
+	
+	Algorithme local:
+	Début
+	
+		Si (Cmp_lentier(a, b) = -1)
+			Alors
+				Retourner VRAI
+			Sinon
+				Retourner FAUX
+		FinSi
+	
+	Fin
+	
+	
+	
+	
+	Operator>= : la fonction(a: un lentier, b: un lentier) -> un booléen
+	Lexique local:
+	
+		vide
+	
+	Algorithme local:
+	Début
+	
+		Si (Cmp_lentier(a, b) != -1)
+			Alors
+				Retourner VRAI
+			Sinon
+				Retourner FAUX
+		FinSi
+	
+	Fin
+	
+	
+	
+	
+	Div_lentier : la fonction (a: un lentier, b: un lentier) -> une adresse vers deux lentiers
+	Lexique local:
+	
+		both : un lentier
+		pass : une adresse vers un lentier
+	
+	Algorithme local:
+	Début
+	
+		both <- Div_eucl(a, b, VRAI)
+		
+		{both.p[0] contient les 32 bits de poids le moins fort de l'adresse}
+		pass = (adresse vers lentier)((long entier non-signé) both.p[1] * 0x100000000) + both.p[0])
+		
+		Libérer(both.p)
+		
+		Retourner pass
+	
+	Fin
+	
+	
+	
+	
+	Merge_2lentiers : la fonction(a: un lentier, b: un lentier) -> un lentier
+	Lexique local:
+	
+		pass: un lentier
+		both: une adresse vers un lentier
+	
+	Algorithme local:
+	Début
+	
+		both <- Allouer(2, lentier)
+		both[0] <- a
+		both[1] <- b
+		
+		pass.size <- 2
+		pass.p = Allouer(pass.size, entier non-signé)
+		
+		pass.p[0] <- (entier non-signé) both
+		pass.p[1] <- (entier non-signé)((long entier non-signé)both / 0x100000000)
+	
+		Retourner pass
+	
+	Fin
+	
+	
+	
+	
+	Div_eucl : la fonction(a: un lentier, b: un lentier, deux: un booléen := FAUX) -> un lentier
+	Lexique local:
+	
+		quotient, reste, B, facteur : 4 lentiers
+		factQ, factA1, ltemp : 3 lentiers
+		both : un lentier
+		pass : une adresse vers un lentier
+		
+		i, j : deux entiers non-signés
+		NBBITS : une constante charactère non-signé := log2(b.p[b.size - 1]) + 1
+	
+	Algorithme local:
+	Début
+	
+		{ Cas où l'on n'a pas besoin d'exécuter la fonction ou où c'est impossible}
+		Si (a.size = 0 OU b.size = 0 OU (b.size = 1 ET b.p[0] = 0))
+			Alors
+				reste.size <- 0
+				reste.p	   <- adresse vers vide
+				
+				Si (deux)
+					Alors
+						quotient.size <- 0
+						quotient.p <- adresse vers vide
+						
+						Retourner Merge_2lentiers(quotient, reste)
+				FinSi
+				
+				Retourner reste
+		FinSi
+		
+		Si (Operator<(a, b))
+			Alors
+				reste.size <- a.size
+				reste.p <- Allouer(reste.size, entier non-signé)
+				
+				i <- 0
+				Tant que (i < reste.size)
+					reste.p[i] <- a.size[i]
+					i <- i + 1
+				FinTantque
+				
+				Si (deux)
+					Alors
+						quotient.size <- 1
+						quotient.p <- Allouer(quotient.size, entier non-signé)
+						quotient.p[0] <- 0
+						
+						Retourner Merge_2lentiers(quotient, reste)
+				FinSi
+				
+				Retourner reste
+		FinSi
+		
+		{Normalisation}
+		Si (NBBITS != 32)
+			Alors
+				Si ((charactère non-signé)(log2(a.p[a.size - 1]) + 1) > NBBITS)
+					Alors
+						reste.size <- a.size + 1
+					Sinon
+						reste.size <- a.size
+				FinSi
+				
+				reste.p <- Allouer(reste.size, entier non-signé)
+				
+				Si (reste.size = a.size + 1)
+					Alors
+						reste.p[reste.size - 1] <- a.p[a.size - 1] >> NBBITS
+				FinSi
+				Si (a.size > 1)
+					Alors
+						i <- a.size - 1
+						Tant que (i > 0)
+							reste.p[i] <- (a.p[i] << (32 - NBBITS)) | (a.p[i - 1] >> NBBITS)
+							i <- i - 1
+						FinTantque
+				FinSi
+				reste.p[0] <- a.p[0] << (32 - NBBITS)
+				
+				B.size <- b.size
+				B.p <- Allouer(B.size, entier non-signé)
+				i <- 1
+				Tant que (i < B.size)
+					B.p[i] <- (b.p[i] << (32 - NBBITS)) | (b.p[i - 1] >> NBBITS)
+					i <- i + 1
+				FinTantque
+				B.p[0] <- b.p[0] << (32 - NBBITS)
+			
+			Sinon
+				reste.size <- a.size
+				reste.p  <- Allouer(reste.size, entier non-signé)
+				i <- 0
+				Tant que (i < reste.size)
+					reste.p[i] <- a.p[i]
+					i <- i + 1
+				FinTantque
+		FinSi
+		
+		quotient.size <- reste.size - B.size + 1
+		quotient.p <- Allouer(quotient.size, entier non-signé)
+		i <- 0
+		Tant que (i < quotient.size)																		{1}
+			quotient.p[i] <- 0
+			i <- i + 1
+		FinTantque
+		
+		Si (B.size = 1)
+			Alors
+				Si (reste.p[reste.size - 1] >= B.p[0])
+					Alors
+						quotient.p[quotient.size - 1] <- quotient.p[quotient.size - 1] + reste.p[reste.size - 1] / B.p[0]
+						reste.p[reste.size - 1] <- reste.p[reste.size - 1] % B.p[0]
+				FinSi
+				
+				i <- reste.size - 1
+				Si (i > 0)
+					Alors
+						quotient.p[i - 1] <- (entier non-signé)((reste.p[i] * (long entier non-signé)(0x100000000) + reste.p[i - 1]) / B.p[0])
+						reste.p[i - 1] <- reste.p[i - 1] - quotient.p[i - 1] * B.p[0]
+						i <- i - 1
+				FinSi
+				
+				lAdjust(reste, 1)
+				
+			Sinon
+				facteur.size <- reste.size
+				facteur.p <- Allouer(facteur.size, entier non-signé)
+				i <- 1
+				Tant que (i <= B.size)
+					facteur.p[facteur.size - i] <- B.p[B.size - i]
+					i <- i + 1
+				FinTantque
+				Tant que (i <= facteur.size)
+					facteur.p[facteur.size - i] <- 0
+					i <- i + 1
+				FinTantque
+				
+				Tant que (Operator>=(reste, facteur))														{2}
+					quotient.p[quotient.size - 1] <- quotient.p[quotient.size - 1] + 1
+					reste <- reste.operator-=(facteur)
+				FinTantque
+				
+				Libérer(facteur.p)
+				facteur.size <- 0
+				
+				i <- reste.size - 1
+				Tant que (i >= B.size)																		{3}
+					
+					Si (reste.p[i] = B.p[B.size - 1])														{a}
+						Alors
+							quotient.p[i - B.size] <- 0xFFFFFFFF;
+						Sinon
+							quotient.p[i - B.size] <- (entier non-signé)((reste.p[i] * (long entier non-signé)0x100000000 + reste.p[i - 1]) / B.p[B.size - 1])
+					FinSi
+					
+																											{b}
+					factA1.size <- 3
+					factA1.p	<- &reste.p[i - 2]															{factA1 = A[i]*r² + A[i-1] * r + A[i - 2]}
+					
+					facteur.size <- 2
+					facteur.p	 <- &B.p[B.size - 2]														{facteur = B[t-1] * r + B[t - 2]}
+					
+					factQ.size <- 1
+					factQ.p	   <- &quotient.p[i - B.size]
+					
+					ltemp <- operator*(factQ, facteur)
+					Tant que (operator>(ltemp, factA1))
+						factQ.p[0] <- factQ.p[0] - 1
+						ltemp <- ltemp.operator-=(facteur)
+					FinTantque
+					
+					Libérer(ltemp.p)
+					
+					facteur.size <- i - B.size + 1
+					facteur.p <- Allouer(facteur.size, entier non-signé)
+					facteur.p[facteur.size - 1] <- quotient.p[i - B.size]
+					j <- 0
+					Tant que (j < facteur.size - 1)
+						facteur.p[j] <- 0
+						j <- j + 1
+					FinTantque
+					
+					facteur <- facteur.Operator*=(B)
+					
+					Si(Operator>=(reste, facteur))
+						Alors																				{c}
+							reste <- reste.Operator-=(facteur)
+							Libérer(facteur.p)
+						Sinon																				{d}
+							quotient.p[i - B.size] <- quotient.p[i - B.size] - 1
+							
+							lAdjust(facteur, i - B + 1)
+							
+							facteur.p[facteur.size - 1] <- quotient.p[i - B.size]
+							facteur <- facteur.Operator*=(B)
+							
+							reste <- reste.Operator-=(facteur)
+							Libérer(facteur.p)
+					FinSi
+					i <- i - 1
+				FinTantque
+					
+		
+		{Inversion normalisation}
+		Si (NBBITS != 32)
+			Alors
+				Si (reste.size > 1)
+					Alors
+						i <- 0
+						Tant que (i < reste.size - 1)
+							reste.p[i] <- (reste.p[i + 1] << NBBITS) | (reste.p[i] >> (32 - NBBITS))
+							i <- i + 1
+						FinTantque
+				FinSi
+				reste.p[reste.size - 1] <- reste.p[reste.size - 1] >> (32 - NBBITS)
+				
+				Si (reste.p[reste.size - 1] = 0 ET reste.size > 1)
+					Alors
+						lAdjust(reste, reste.size - 1)
+				FinSi
+				
+				Libérer(B.p)
+		FinSi
+		
+		Si (deux)
+			Alors
+				Si (quotient.p[quotient.size - 1] = 0 ET quotient.size != 1)
+					Alors
+						lAdjust(quotient, quotient.size - 1)
+				FinSi
+				
+				Retourner Merge_2lentiers(quotient, reste)
+		FinSi
+		
+		Libérer(quotient)
+		
+		Retourner reste
+	
+	Fin

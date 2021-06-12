@@ -11,19 +11,11 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 		if (deux)
 		{
-			lentier both, * pass;
-			both.size = 1;
-			both.p = new unsigned[both.size];
-			pass = new lentier[2];
+			lentier quotient;
+			quotient.size = 0;
+			quotient.p = nullptr;
 
-			pass[0].size = 0;
-			pass[0].p = nullptr;
-			pass[1] = reste;
-
-			both.p[0] = (unsigned)pass;
-			both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
-
-			return both;
+			return merge_2lentiers(quotient, reste);
 		}
 
 		return reste;
@@ -40,19 +32,11 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 		if (deux)
 		{
-			lentier both, * pass;
-			both.size = 1;
-			both.p = new unsigned[both.size];
-			pass = new lentier[2];
+			lentier quotient;
+			quotient.size = 1;
+			quotient.p = new unsigned[quotient.size]();
 
-			pass[0].size = 1;
-			pass[0].p = new unsigned[pass[0].size]();
-			pass[1] = reste;
-
-			both.p[0] = (unsigned)pass;
-			both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);
-
-			return both;
+			return merge_2lentiers(quotient, reste);
 		}
 
 		return reste;
@@ -67,7 +51,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 	//Normalisation des termes de l'opération si nécessaire
 	if (m != 32)
 	{
-		if (static_cast<unsigned>(log2(a.p[a.size - 1]) + 1) > m)	//overflow
+		if (static_cast<unsigned char>(log2(a.p[a.size - 1]) + 1) > m)	//overflow
 		{
 			reste.size = a.size + 1;
 		}
@@ -230,21 +214,9 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if (deux == 1)			//Cette partie n'est exécutée que lors que cette fonction est appelée par la fonction div_lentier()
 	{
-		if (quotient.p[quotient.size - 1] == 0) lAdjust(quotient, quotient.size - 1);
+		if (quotient.p[quotient.size - 1] == 0 && quotient.size != 1) lAdjust(quotient, quotient.size - 1);
 
-		lentier both, * pass;
-		both.size = 2;
-		both.p = new unsigned[both.size];
-		pass = new lentier[2];
-
-		pass[0] = quotient;
-		pass[1] = reste;
-
-		//Transforme un pointeur en lentier simple pour être retourné avant d'être retransformé en pointeur
-		both.p[0] = (unsigned)pass;		//both.p contient l'adresse du lentier quotient (pass[0], reste est toujours situé à &pass[0] + 1)
-		both.p[1] = (unsigned)((unsigned long long)(pass) / 0x100000000);	//Nécessaire si le programme est build en 64bits
-
-		return both;
+		return merge_2lentiers(quotient, reste);
 	}
 
 	delete[] quotient.p;
@@ -252,20 +224,38 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 	return reste;
 }
 
-lentier* div_lentier(const lentier a, const lentier b)
+lentier merge_2lentiers(const lentier a, const lentier b)
 {
-	lentier both, *pass;
-	both = div_eucl(a, b, 1);
+	lentier* both, pass;
+	
+	both = new lentier[2];
+	both[0] = a;
+	both[1] = b;
 
-	/* Retransforme le lentier en pointeur
-	 * Ainsi, pass[0] = quotient et pass[1] = reste
-	 */
-	pass = (lentier*)((unsigned long long)both.p[1] * 0x100000000 + both.p[0]);
-	delete[] both.p;
+	pass.size = 2;
+	pass.p = new unsigned[pass.size];
+
+	//Transforme un pointeur en lentier simple pour être retourné avant d'être retransformé en pointeur
+	pass.p[0] = (unsigned)both;		//both.p contient l'adresse du lentier quotient (pass[0], reste est toujours situé à &pass[0] + 1)
+	pass.p[1] = (unsigned)((unsigned long long)both / 0x100000000) ;	//Nécessaire si le programme est build en 64bits
+	
 	return pass;
 }
 
-lentier lentier::operator-=(lentier a)
+lentier* div_lentier(const lentier a, const lentier b)
+{
+	lentier *both, pass;
+	pass = div_eucl(a, b, 1);
+
+	/* Retransforme le lentier en pointeur
+	 * Ainsi, both[0] = quotient et both[1] = reste
+	 */
+	both = (lentier*)((unsigned long long)pass.p[1] * 0x100000000 + pass.p[0]);
+	delete[] pass.p;
+	return both;
+}
+
+lentier lentier::operator-=(const lentier a)
 {
 	unsigned* temp = this->p;
 	*this = sub_lentier(*this, a);
@@ -274,15 +264,15 @@ lentier lentier::operator-=(lentier a)
 	return *this;
 }
 
-lentier operator*(lentier a, lentier b)
+lentier operator*(const lentier a, const lentier b)
 {
 	return mult_classique(a, b);
 }
 
-lentier lentier::operator*=(lentier a)
+lentier lentier::operator*=(const lentier a)
 {
 	unsigned* temp = this->p;
-	*this = *this * a;
+	*this = mult_classique(*this, a);
 	delete[] temp;
 
 	return *this;
