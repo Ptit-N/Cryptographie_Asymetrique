@@ -112,7 +112,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			reste.p[i - 1] -= static_cast<unsigned>(quotient.p[i - 1] * B.p[0]);
 		}
 
-		lAdjust(reste, 1);
+		lAdjust_realloc(reste);
 	}
 	else
 	{
@@ -180,9 +180,9 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 			else																			//d
 			{
 				quotient.p[i - B.size]--;
-
-				lAdjust(facteur, i - B.size + 1);
-
+				delete[] facteur.p;
+				facteur.size = i - B.size + 1;
+				facteur.p = new unsigned[facteur.size]();
 				facteur.p[facteur.size - 1] = quotient.p[i - B.size];
 				facteur *= B;
 
@@ -206,7 +206,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 		if (reste.p[reste.size - 1] == 0 && reste.size > 1)
 		{
-			lAdjust(reste, reste.size - 1);
+			lAdjust_realloc(reste);
 		}
 
 		delete[] B.p;
@@ -214,7 +214,7 @@ lentier div_eucl(const lentier a, const lentier b, const bool deux)
 
 	if (deux == 1)			//Cette partie n'est exécutée que lors que cette fonction est appelée par la fonction div_lentier()
 	{
-		if (quotient.p[quotient.size - 1] == 0 && quotient.size != 1) lAdjust(quotient, quotient.size - 1);
+		if (quotient.p[quotient.size - 1] == 0 && quotient.size != 1) lAdjust_realloc(quotient);
 
 		return merge_2lentiers(quotient, reste);
 	}
